@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 2,
+  "site": {
+    "name": "Hien Hoang",
+    "role": "Software Engineer",
+    "avatarFileName": "hhoang-avatar-2.png",
+    "avatarAlt": "Illustrated portrait of Hien Hoang",
+    "heroPortraits": {
+      "light": { "fileName": "hhoang-avatar-2.png", "alt": "Illustrated portrait of Hien Hoang" },
+      "dark": { "fileName": "hhoang-avatar-2.png", "alt": "Illustrated portrait of Hien Hoang" },
+      "naruto": { "fileName": "naruto-avatar.png", "alt": "Naruto Uzumaki making a ninja hand sign" }
+    },
+    "location": "United States",
+    "tagline": "Building reliable software across distributed systems, cloud platforms, and thoughtful web experiences.",
+    "availability": "Open to software engineering opportunities",
+    "defaultTheme": "light",
+    "allowedThemes": ["light", "dark", "naruto"]
+  },
+  "pages": [
+    { "id": "about", "label": "About", "enabled": true },
+    { "id": "experience", "label": "Experience", "enabled": true },
+    { "id": "projects", "label": "Projects", "enabled": true }
+  ],
+  "about": {
+    "summary": "Software engineer with experience building distributed telemetry, cloud APIs, internal developer tools, and full-stack products. I enjoy solving systems problems and turning complex technical requirements into reliable, maintainable software.",
+    "sections": [
+      { "id": "intro", "enabled": true },
+      { "id": "education", "enabled": true },
+      { "id": "interests", "enabled": true },
+      { "id": "funFacts", "enabled": true },
+      { "id": "favoriteAnime", "enabled": true },
+      { "id": "pictures", "enabled": false }
+    ]
+  },
+  "education": [
+    {
+      "institution": "Worcester Polytechnic Institute",
+      "location": "Worcester, MA",
+      "degree": "B.S. in Computer Science",
+      "minor": "Data Science",
+      "graduation": "May 2026",
+      "gpa": "3.8/4.0",
+      "distinction": "High Distinction",
+      "coursework": [
+        "Distributed Systems",
+        "Operating Systems",
+        "Database Systems",
+        "Computer Networks",
+        "Artificial Intelligence",
+        "Software Engineering",
+        "Algorithms",
+        "Object-Oriented Design and Programming",
+        "Linear Algebra",
+        "Statistics",
+        "Probability"
+      ],
+      "honors": [
+        "Best Software Prize at GoatHacks 2025",
+        "5x Dean's List",
+        "WPI Presidential Scholarship",
+        "WPI Global Scholarship"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Arista Networks",
+      "role": "Software Engineer Intern - Network Detection & Response",
+      "location": "Austin, TX",
+      "startDate": "May 2026",
+      "endDate": "August 2026",
+      "highlights": [
+        "Designed and implemented a distributed telemetry service in Haskell on NixOS/Linux network security appliances, publishing health and configuration data to Kafka for automated misconfiguration detection, remediation, and capacity-aware bandwidth allocation.",
+        "Engineered a least-privilege authorization model for a cloud-based network appliance management and SSH access portal using Amazon Cognito and hierarchical customer and appliance policies in DynamoDB.",
+        "Migrated six AWS API Gateway endpoints from direct DynamoDB integrations to AWS Lambda, enabling fine-grained Cognito authorization and supporting future PostgreSQL and HTTP v2 API migrations."
+      ],
+      "technologies": ["Haskell", "NixOS", "Linux", "Kafka", "AWS Lambda", "API Gateway", "DynamoDB", "Amazon Cognito", "PostgreSQL"]
+    },
+    {
+      "company": "DEKA Research & Development",
+      "role": "Cloud Platform Engineer Intern",
+      "location": "Manchester, NH",
+      "startDate": "June 2025",
+      "endDate": "December 2025",
+      "highlights": [
+        "Designed and implemented Go REST APIs for routing IoT events and AWS Systems Manager updates to downstream microservices.",
+        "Designed and tested a SQLite data layer and supported the database selection decision.",
+        "Reduced documentation time by 90% per release by building Python CLI tools that gathered software version information from GitLab, Artifactory, and Jira.",
+        "Integrated tooling into Jenkins CI with more than 95% unit test coverage."
+      ],
+      "technologies": ["Go", "Python", "AWS", "SQLite", "Jenkins", "GitLab", "Artifactory", "Jira"]
+    },
+    {
+      "company": "FPT Information Systems",
+      "role": "Software Engineer Intern",
+      "location": "Hanoi, Vietnam",
+      "startDate": "May 2024",
+      "endDate": "August 2024",
+      "highlights": [
+        "Worked in a team of four to build a full-stack HR onboarding platform supporting more than 200 new hires, delivering eight REST APIs and five frontend views with React and Spring Boot.",
+        "Improved employee and task API response times by 40% through PostgreSQL query optimization and Redis caching."
+      ],
+      "technologies": ["React", "Spring Boot", "PostgreSQL", "Redis", "REST APIs"]
+    }
+  ],
+  "skills": {
+    "languages": ["Java", "Python", "C", "C++", "Go", "Haskell", "JavaScript", "TypeScript", "SQL", "HTML", "CSS", "Bash/Shell"],
+    "frameworksAndLibraries": ["React", "Express", "Spring Boot", "FastAPI", "Node.js", "Socket.io", "JUnit", "Pytest"],
+    "cloudDatabasesAndDistributedSystems": ["AWS Lambda", "API Gateway", "DynamoDB", "EC2", "ElastiCache", "SQS", "SNS", "EFS", "S3", "Amazon Cognito", "PostgreSQL", "MongoDB", "Redis", "Apache Kafka", "Protobuf"],
+    "developerTools": ["Linux", "Docker", "Kubernetes", "Git", "GitHub", "GitLab", "Jenkins", "NixOS", "Postman", "Confluence", "Jira", "Figma"]
+  },
+  "projects": [
+    {
+      "id": "distributed-mapreduce",
+      "title": "Distributed MapReduce Framework",
+      "summary": "A fault-tolerant MapReduce system with concurrent scheduling and speculative execution.",
+      "highlights": [
+        "Implemented a coordinator-worker MapReduce system in Go using RPC.",
+        "Built concurrent task scheduling with goroutines and channels, including automatic reassignment when workers fail.",
+        "Added speculative execution for straggling tasks to improve overall job completion time."
+      ],
+      "technologies": ["Go", "RPC", "Concurrency"],
+      "featured": true
+    },
+    {
+      "id": "repo2resume",
+      "title": "Repo2Resume",
+      "subtitle": "WPI 2025 Hackathon Winner",
+      "summary": "An AI-powered resume generator that transforms GitHub repositories into tailored STAR-format resume bullets.",
+      "highlights": [
+        "Built a full-stack application with a React and Tailwind frontend and a FastAPI backend.",
+        "Containerized the application with Docker.",
+        "Used PineconeDB embeddings and semantic search to match repositories with relevant job descriptions."
+      ],
+      "technologies": ["React", "Tailwind CSS", "FastAPI", "PineconeDB", "Docker"],
+      "featured": true
+    },
+    {
+      "id": "database-systems",
+      "title": "Database Systems Projects",
+      "summary": "Core database components covering buffer management, indexing, and query planning.",
+      "highlights": [
+        "Implemented a DBMS buffer manager with frame allocation, LRU eviction, and pin/unpin semantics.",
+        "Built indexing structures that reduced query lookup from O(n) scans to O(1) access.",
+        "Developed a SQL-like query engine that selects between table and index scans based on query characteristics."
+      ],
+      "technologies": ["Java", "File I/O", "Data Structures", "Database Systems"],
+      "featured": true
+    }
+  ],
+  "contacts": [
+    { "id": "email", "label": "Email", "url": "mailto:erichoang0326@gmail.com" },
+    { "id": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/hienhoangg" },
+    { "id": "github", "label": "GitHub", "url": "https://github.com/giahienhoang99" },
+    { "id": "resume", "label": "Resume", "url": "https://drive.google.com/file/d/16pAAtQk6HTlSg1KdinYkrefDdDvR0v_M/view?usp=sharing" }
+  ],
+  "analytics": {
+    "enabled": false
+  }
+}

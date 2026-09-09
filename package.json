@@ -1,0 +1,15 @@
+{
+  "name": "portfolio-no-jutsu",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.19.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @portfolio-no-jutsu/web",
+    "build": "npm run build --workspace @portfolio-no-jutsu/web",
+    "lint": "npm run lint --workspace @portfolio-no-jutsu/web"
+  }
+}
