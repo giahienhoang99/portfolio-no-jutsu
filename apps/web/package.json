@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run --root ../.. apps/web",
+    "test:coverage": "vitest run --coverage --root ../.. apps/web --coverage.include=apps/web/src/lib/**/*.ts --coverage.reportsDirectory=coverage/web"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",

@@ -1,3 +1,4 @@
+/** Configures ESLint with Next.js Core Web Vitals rules and generated-file exclusions. */
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 
