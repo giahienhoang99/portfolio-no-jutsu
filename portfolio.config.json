@@ -83,7 +83,7 @@
       "startDate": "June 2025",
       "endDate": "December 2025",
       "highlights": [
-        "Designed and implemented Go REST APIs for routing IoT events and AWS Systems Manager updates to downstream microservices.",
+        "Prototyped Go REST APIs for routing IoT events and AWS Systems Manager updates to downstream microservices.",
         "Designed and tested a SQLite data layer and supported the database selection decision.",
         "Reduced documentation time by 90% per release by building Python CLI tools that gathered software version information from GitLab, Artifactory, and Jira.",
         "Integrated tooling into Jenkins CI with more than 95% unit test coverage."
@@ -97,7 +97,7 @@
       "startDate": "May 2024",
       "endDate": "August 2024",
       "highlights": [
-        "Worked in a team of four to build a full-stack HR onboarding platform supporting more than 200 new hires, delivering eight REST APIs and five frontend views with React and Spring Boot.",
+        "Worked in a team of four to build a full-stack HR onboarding platform supporting more than 200 new hires, delivering 8 REST APIs and 5 frontend views with React and Spring Boot.",
         "Improved employee and task API response times by 40% through PostgreSQL query optimization and Redis caching."
       ],
       "technologies": ["React", "Spring Boot", "PostgreSQL", "Redis", "REST APIs"]
