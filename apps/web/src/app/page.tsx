@@ -1,20 +1,38 @@
+/** Renders the interactive single-page portfolio views, navigation, contacts, and theme controls. */
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
-import portfolioConfig from "../../../../portfolio.config.json";
+import { portfolioConfig } from "@/lib/portfolio-config";
 
 type ThemeName = "light" | "dark" | "naruto";
 type PageId = "home" | "about" | "experience" | "projects";
 
+/**
+ * Renders the decorative arrow used for external-link and call-to-action affordances.
+ *
+ * @returns An accessibility-hidden SVG arrow.
+ */
 function ArrowUpRight() {
   return <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><path d="M5 15 15 5M7 5h8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
+/**
+ * Renders the software-engineering badge used by non-Naruto themes.
+ *
+ * @returns An accessibility-hidden SVG coding icon.
+ */
 function CoderIcon() {
   return <svg aria-hidden="true" viewBox="0 0 32 32" fill="none"><rect x="4" y="6" width="24" height="17" rx="2" /><path d="M2.5 26h27M12 12l-3 2.5 3 2.5m8-5 3 2.5-3 2.5m-2-7-4 9" /></svg>;
 }
 
+/**
+ * Selects the navigation icon associated with a portfolio view.
+ *
+ * @param props - Navigation-icon properties.
+ * @param props.page - Portfolio view whose icon should be rendered.
+ * @returns The accessibility-hidden SVG for the requested view.
+ */
 function NavIcon({ page }: { page: PageId }) {
   if (page === "home") return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7v9h-6v-6h-4v6H4z" /></svg>;
   if (page === "about") return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M5 21c.5-5 2.8-7 7-7s6.5 2 7 7" /></svg>;
@@ -22,6 +40,14 @@ function NavIcon({ page }: { page: PageId }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v4H4zM14 15h6v4h-6z" /></svg>;
 }
 
+/**
+ * Renders the introduction view and its theme-specific hero portrait.
+ *
+ * @param props - Home-view properties.
+ * @param props.goTo - Callback that activates another portfolio view.
+ * @param props.theme - Currently selected visual theme.
+ * @returns The portfolio introduction section.
+ */
 function HomeView({ goTo, theme }: { goTo: (page: PageId) => void; theme: ThemeName }) {
   const heroPortrait = portfolioConfig.site.heroPortraits[theme];
 
@@ -49,6 +75,13 @@ function HomeView({ goTo, theme }: { goTo: (page: PageId) => void; theme: ThemeN
   );
 }
 
+/**
+ * Renders the biography, experience preview, education, and technical skills.
+ *
+ * @param props - About-view properties.
+ * @param props.goTo - Callback that activates another portfolio view.
+ * @returns The complete About section.
+ */
 function AboutView({ goTo }: { goTo: (page: PageId) => void }) {
   const education = portfolioConfig.education[0];
   const skillGroups = Object.entries(portfolioConfig.skills);
@@ -70,6 +103,11 @@ function AboutView({ goTo }: { goTo: (page: PageId) => void }) {
   );
 }
 
+/**
+ * Renders the configured employment history as a detailed timeline.
+ *
+ * @returns The complete Experience section.
+ */
 function ExperienceView() {
   return (
     <section className="view inner-view" aria-labelledby="experience-heading">
@@ -80,6 +118,11 @@ function ExperienceView() {
   );
 }
 
+/**
+ * Renders featured projects and their configured descriptions and technologies.
+ *
+ * @returns The selected-work project grid.
+ */
 function ProjectsView() {
   const accents = ["sun", "violet", "mint"];
 
@@ -92,6 +135,11 @@ function ProjectsView() {
   );
 }
 
+/**
+ * Coordinates active-view and theme state for the portfolio shell.
+ *
+ * @returns The navigation sidebar and currently selected portfolio view.
+ */
 export default function HomePage() {
   const [theme, setTheme] = useState<ThemeName>(portfolioConfig.site.defaultTheme as ThemeName);
   const [activePage, setActivePage] = useState<PageId>("home");

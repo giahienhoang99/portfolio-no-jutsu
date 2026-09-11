@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run --root ../.. apps/web",
+    "test:coverage": "vitest run --coverage --root ../.. apps/web --coverage.include=apps/web/src/lib/**/*.ts --coverage.reportsDirectory=coverage/web"
   },
   "dependencies": {
+    "@portfolio-no-jutsu/contracts": "0.1.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
