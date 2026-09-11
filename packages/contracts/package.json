@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vitest run --root ../.. packages/contracts",
+    "test:coverage": "vitest run --coverage --root ../.. packages/contracts --coverage.include=packages/contracts/src/index.ts --coverage.reportsDirectory=coverage/contracts"
+  },
+  "dependencies": {
+    "zod": "4.6.2"
+  },
   "exports": {
     ".": "./src/index.ts"
   }
