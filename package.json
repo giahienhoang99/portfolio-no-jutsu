@@ -12,10 +12,13 @@
     "build": "npm run build --workspace @portfolio-no-jutsu/web",
     "lint": "npm run lint --workspace @portfolio-no-jutsu/web",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "analytics:migrate": "tsx apps/web/src/lib/analytics/migrate.ts",
+    "analytics:migrate:check": "tsx apps/web/src/lib/analytics/migrate.ts --check"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "5.0.0",
-    "vitest": "5.0.0"
+    "@vitest/coverage-v8": "^5.0.0",
+    "tsx": "^4.23.13",
+    "vitest": "^5.0.0"
   }
 }

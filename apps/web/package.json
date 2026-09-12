@@ -11,6 +11,7 @@
     "test:coverage": "vitest run --coverage --root ../.. apps/web --coverage.include=apps/web/src/lib/**/*.ts --coverage.reportsDirectory=coverage/web"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
     "@portfolio-no-jutsu/contracts": "0.1.0",
     "next": "latest",
     "react": "latest",
@@ -21,9 +22,11 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@vitest/coverage-v8": "^5.0.0",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "vitest": "^5.0.0"
   }
 }
