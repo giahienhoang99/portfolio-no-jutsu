@@ -5,7 +5,7 @@ import { portfolioConfig } from "./portfolio-config";
 describe("portfolioConfig", () => {
   it("contains a valid, fully defaulted analytics configuration", () => {
     expect(portfolioConfig.analytics).toEqual({
-      enabled: false,
+      enabled: true,
       retentionDays: 60,
       refreshIntervalSeconds: 15,
       sessionTimeoutMinutes: 30,

@@ -155,7 +155,7 @@
     { "id": "resume", "label": "Resume", "url": "https://drive.google.com/file/d/16pAAtQk6HTlSg1KdinYkrefDdDvR0v_M/view?usp=sharing" }
   ],
   "analytics": {
-    "enabled": false,
+    "enabled": true,
     "retentionDays": 60,
     "refreshIntervalSeconds": 15,
     "sessionTimeoutMinutes": 30,
