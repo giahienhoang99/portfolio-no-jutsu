@@ -9,6 +9,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       include: [
+        "apps/web/src/lib/analytics/client.ts",
         "apps/web/src/lib/analytics/event-handler.ts",
         "apps/web/src/lib/analytics/event-service.ts",
         "apps/web/src/lib/analytics/server-config.ts",
