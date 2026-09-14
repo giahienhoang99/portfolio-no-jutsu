@@ -1,4 +1,4 @@
-/** Exercises the public analytics request, configuration, date-range, and response contracts. */
+/** Exercises public analytics and resume configuration contracts. */
 import { describe, expect, it } from "vitest";
 import {
   ANALYTICS_EVENT_NAMES,
@@ -6,6 +6,7 @@ import {
   analyticsEventRequestSchema,
   analyticsMetricsResponseSchema,
   analyticsPublicConfigSchema,
+  resumeConfigSchema,
 } from "./index";
 
 describe("analyticsEventRequestSchema", () => {
@@ -84,5 +85,27 @@ describe("analytics date and response schemas", () => {
         secret: "not allowed",
       }),
     ).toThrow();
+  });
+});
+
+describe("resumeConfigSchema", () => {
+  it("accepts a same-origin PDF path and safe download filename", () => {
+    expect(resumeConfigSchema.parse({
+      pdfPath: "/resume/hien-hoang-resume.pdf",
+      downloadFileName: "Hien-Hoang-Resume.pdf",
+    })).toEqual({
+      pdfPath: "/resume/hien-hoang-resume.pdf",
+      downloadFileName: "Hien-Hoang-Resume.pdf",
+    });
+  });
+
+  it.each([
+    { pdfPath: "https://example.com/resume.pdf", downloadFileName: "Resume.pdf" },
+    { pdfPath: "/resume/../private.pdf", downloadFileName: "Resume.pdf" },
+    { pdfPath: "/resume/resume.txt", downloadFileName: "Resume.pdf" },
+    { pdfPath: "/resume/resume.pdf", downloadFileName: "../Resume.pdf" },
+    { pdfPath: "/resume/resume.pdf", downloadFileName: "Resume.txt" },
+  ])("rejects unsafe resume configuration %#", (configuration) => {
+    expect(resumeConfigSchema.safeParse(configuration).success).toBe(false);
   });
 });

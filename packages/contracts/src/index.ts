@@ -1,4 +1,4 @@
-/** Defines shared runtime schemas and inferred TypeScript types for portfolio analytics. */
+/** Defines shared runtime schemas and inferred TypeScript types for portfolio features. */
 import { z } from "zod";
 
 export const ANALYTICS_EVENT_NAMES = ["visit", "resume_view", "resume_download"] as const;
@@ -90,3 +90,18 @@ export type AnalyticsPublicConfig = z.infer<typeof analyticsPublicConfigSchema>;
 export type AnalyticsDateRange = z.infer<typeof analyticsDateRangeSchema>;
 export type AnalyticsDailyMetrics = z.infer<typeof analyticsDailyMetricsSchema>;
 export type AnalyticsMetricsResponse = z.infer<typeof analyticsMetricsResponseSchema>;
+
+export const resumeConfigSchema = z.strictObject({
+  pdfPath: z
+    .string()
+    .max(256)
+    .regex(/^\/(?:[A-Za-z0-9._-]+\/)*[A-Za-z0-9._-]+\.pdf$/, "Resume PDF must be a same-origin absolute PDF path")
+    .refine((path) => path.split("/").every((segment) => segment !== "." && segment !== ".."), "Resume PDF path cannot traverse directories"),
+  downloadFileName: z
+    .string()
+    .min(5)
+    .max(128)
+    .regex(/^[A-Za-z0-9][A-Za-z0-9._ -]*\.pdf$/, "Resume download filename must be a safe PDF filename"),
+});
+
+export type ResumeConfig = z.infer<typeof resumeConfigSchema>;
