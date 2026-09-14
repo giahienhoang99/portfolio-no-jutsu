@@ -143,32 +143,42 @@ function ProjectsView() {
 export default function HomePage() {
   const [theme, setTheme] = useState<ThemeName>(portfolioConfig.site.defaultTheme as ThemeName);
   const [activePage, setActivePage] = useState<PageId>("home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const enabledPages: Array<{ id: PageId; label: string }> = [
     { id: "home", label: "Home" },
     ...portfolioConfig.pages.filter((page) => page.enabled).map((page) => ({ id: page.id as PageId, label: page.label })),
   ];
   const email = portfolioConfig.contacts.find((contact) => contact.id === "email");
   const sidebarContacts = portfolioConfig.contacts.filter((contact) => contact.id !== "email");
+  const goToPage = (page: PageId) => {
+    setActivePage(page);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="site-shell" data-theme={theme}>
       <div className="site-noise" aria-hidden="true" />
-      <aside className="sidebar">
-        <button className="brand" onClick={() => setActivePage("home")} aria-label="Open home page" type="button"><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></button>
-        <nav className="side-nav" aria-label="Portfolio pages">
-          {enabledPages.map((page, index) => <button className={activePage === page.id ? "active" : ""} onClick={() => setActivePage(page.id)} aria-current={activePage === page.id ? "page" : undefined} key={page.id} type="button"><span className="nav-number">0{index + 1}</span><span className="nav-icon"><NavIcon page={page.id} /></span><span className="nav-label">{page.label}</span><span className="nav-arrow">→</span></button>)}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="theme-switcher" aria-label="Choose colour theme">{portfolioConfig.site.allowedThemes.map((availableTheme) => <button aria-label={`Use ${availableTheme} theme`} aria-pressed={theme === availableTheme} className={`theme-dot ${availableTheme}`} key={availableTheme} onClick={() => setTheme(availableTheme as ThemeName)} type="button" />)}</div>
-          {email && <a className="sidebar-email" href={email.url}><span>Let&apos;s talk</span><ArrowUpRight /></a>}
-          <div className="sidebar-links">{sidebarContacts.map((contact) => <a href={contact.url} key={contact.id} target={contact.url.startsWith("http") ? "_blank" : undefined} rel={contact.url.startsWith("http") ? "noreferrer" : undefined}>{contact.label}</a>)}</div>
-          <p>© 2026 {portfolioConfig.site.name}</p>
+      <aside className="sidebar" data-mobile-open={mobileMenuOpen}>
+        <button className="brand" onClick={() => goToPage("home")} aria-label="Open home page" type="button"><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></button>
+        <button className="mobile-menu-toggle" aria-controls="portfolio-navigation" aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"} onClick={() => setMobileMenuOpen((open) => !open)} type="button">
+          <span className="mobile-menu-icon" aria-hidden="true"><span /><span /><span /></span>
+        </button>
+        <div className="sidebar-menu" id="portfolio-navigation">
+          <nav className="side-nav" aria-label="Portfolio pages">
+            {enabledPages.map((page, index) => <button className={activePage === page.id ? "active" : ""} onClick={() => goToPage(page.id)} aria-current={activePage === page.id ? "page" : undefined} key={page.id} type="button"><span className="nav-number">0{index + 1}</span><span className="nav-icon"><NavIcon page={page.id} /></span><span className="nav-label">{page.label}</span><span className="nav-arrow">→</span></button>)}
+          </nav>
+          <div className="sidebar-bottom">
+            <div className="theme-switcher" aria-label="Choose colour theme">{portfolioConfig.site.allowedThemes.map((availableTheme) => <button aria-label={`Use ${availableTheme} theme`} aria-pressed={theme === availableTheme} className={`theme-dot ${availableTheme}`} key={availableTheme} onClick={() => setTheme(availableTheme as ThemeName)} type="button" />)}</div>
+            {email && <a className="sidebar-email" href={email.url}><span>Let&apos;s talk</span><ArrowUpRight /></a>}
+            <div className="sidebar-links">{sidebarContacts.map((contact) => <a href={contact.url} key={contact.id} target={contact.url.startsWith("http") ? "_blank" : undefined} rel={contact.url.startsWith("http") ? "noreferrer" : undefined}>{contact.label}</a>)}</div>
+            <p>© 2026 {portfolioConfig.site.name}</p>
+          </div>
         </div>
       </aside>
 
       <main className="content-panel" key={activePage}>
-        {activePage === "home" && <HomeView goTo={setActivePage} theme={theme} />}
-        {activePage === "about" && <AboutView goTo={setActivePage} />}
+        {activePage === "home" && <HomeView goTo={goToPage} theme={theme} />}
+        {activePage === "about" && <AboutView goTo={goToPage} />}
         {activePage === "experience" && <ExperienceView />}
         {activePage === "projects" && <ProjectsView />}
       </main>
