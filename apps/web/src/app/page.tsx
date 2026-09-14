@@ -1,12 +1,12 @@
 /** Renders the interactive single-page portfolio views, navigation, contacts, and theme controls. */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { PortfolioShell, type PortfolioPageId, type ThemeName } from "@/components/portfolio-shell";
 import { portfolioConfig } from "@/lib/portfolio-config";
 
-type ThemeName = "light" | "dark" | "naruto";
-type PageId = "home" | "about" | "experience" | "projects";
+type PageId = PortfolioPageId;
 
 /**
  * Renders the decorative arrow used for external-link and call-to-action affordances.
@@ -24,20 +24,6 @@ function ArrowUpRight() {
  */
 function CoderIcon() {
   return <svg aria-hidden="true" viewBox="0 0 32 32" fill="none"><rect x="4" y="6" width="24" height="17" rx="2" /><path d="M2.5 26h27M12 12l-3 2.5 3 2.5m8-5 3 2.5-3 2.5m-2-7-4 9" /></svg>;
-}
-
-/**
- * Selects the navigation icon associated with a portfolio view.
- *
- * @param props - Navigation-icon properties.
- * @param props.page - Portfolio view whose icon should be rendered.
- * @returns The accessibility-hidden SVG for the requested view.
- */
-function NavIcon({ page }: { page: PageId }) {
-  if (page === "home") return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7v9h-6v-6h-4v6H4z" /></svg>;
-  if (page === "about") return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M5 21c.5-5 2.8-7 7-7s6.5 2 7 7" /></svg>;
-  if (page === "experience") return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6V4h8v2m-13 4h18v10H3z" /><path d="M3 13h18M10 13v2h4v-2" /></svg>;
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v4H4zM14 15h6v4h-6z" /></svg>;
 }
 
 /**
@@ -143,45 +129,29 @@ function ProjectsView() {
 export default function HomePage() {
   const [theme, setTheme] = useState<ThemeName>(portfolioConfig.site.defaultTheme as ThemeName);
   const [activePage, setActivePage] = useState<PageId>("home");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const enabledPages: Array<{ id: PageId; label: string }> = [
-    { id: "home", label: "Home" },
-    ...portfolioConfig.pages.filter((page) => page.enabled).map((page) => ({ id: page.id as PageId, label: page.label })),
-  ];
-  const email = portfolioConfig.contacts.find((contact) => contact.id === "email");
-  const sidebarContacts = portfolioConfig.contacts.filter((contact) => contact.id !== "email");
+
+  useEffect(() => {
+    const selectHashedPage = () => {
+      const page = window.location.hash.slice(1);
+      if (page === "about" || page === "experience" || page === "projects") setActivePage(page);
+      else if (!page) setActivePage("home");
+    };
+    selectHashedPage();
+    window.addEventListener("hashchange", selectHashedPage);
+    return () => window.removeEventListener("hashchange", selectHashedPage);
+  }, []);
+
   const goToPage = (page: PageId) => {
     setActivePage(page);
-    setMobileMenuOpen(false);
+    window.history.replaceState(null, "", page === "home" ? "/" : `/#${page}`);
   };
 
   return (
-    <div className="site-shell" data-theme={theme}>
-      <div className="site-noise" aria-hidden="true" />
-      <aside className="sidebar" data-mobile-open={mobileMenuOpen}>
-        <button className="brand" onClick={() => goToPage("home")} aria-label="Open home page" type="button"><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></button>
-        <button className="mobile-menu-toggle" aria-controls="portfolio-navigation" aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"} onClick={() => setMobileMenuOpen((open) => !open)} type="button">
-          <span className="mobile-menu-icon" aria-hidden="true"><span /><span /><span /></span>
-        </button>
-        <div className="sidebar-menu" id="portfolio-navigation">
-          <nav className="side-nav" aria-label="Portfolio pages">
-            {enabledPages.map((page, index) => <button className={activePage === page.id ? "active" : ""} onClick={() => goToPage(page.id)} aria-current={activePage === page.id ? "page" : undefined} key={page.id} type="button"><span className="nav-number">0{index + 1}</span><span className="nav-icon"><NavIcon page={page.id} /></span><span className="nav-label">{page.label}</span><span className="nav-arrow">→</span></button>)}
-          </nav>
-          <div className="sidebar-bottom">
-            <div className="theme-switcher" aria-label="Choose colour theme">{portfolioConfig.site.allowedThemes.map((availableTheme) => <button aria-label={`Use ${availableTheme} theme`} aria-pressed={theme === availableTheme} className={`theme-dot ${availableTheme}`} key={availableTheme} onClick={() => setTheme(availableTheme as ThemeName)} type="button" />)}</div>
-            {email && <a className="sidebar-email" href={email.url}><span>Let&apos;s talk</span><ArrowUpRight /></a>}
-            <div className="sidebar-links">{sidebarContacts.map((contact) => <a href={contact.url} key={contact.id} target={contact.url.startsWith("http") ? "_blank" : undefined} rel={contact.url.startsWith("http") ? "noreferrer" : undefined}>{contact.label}</a>)}</div>
-            <p>© 2026 {portfolioConfig.site.name}</p>
-          </div>
-        </div>
-      </aside>
-
-      <main className="content-panel" key={activePage}>
-        {activePage === "home" && <HomeView goTo={goToPage} theme={theme} />}
-        {activePage === "about" && <AboutView goTo={goToPage} />}
-        {activePage === "experience" && <ExperienceView />}
-        {activePage === "projects" && <ProjectsView />}
-      </main>
-    </div>
+    <PortfolioShell activePage={activePage} onPageSelect={goToPage} onThemeChange={setTheme} theme={theme}>
+      {activePage === "home" && <HomeView goTo={goToPage} theme={theme} />}
+      {activePage === "about" && <AboutView goTo={goToPage} />}
+      {activePage === "experience" && <ExperienceView />}
+      {activePage === "projects" && <ProjectsView />}
+    </PortfolioShell>
   );
 }
