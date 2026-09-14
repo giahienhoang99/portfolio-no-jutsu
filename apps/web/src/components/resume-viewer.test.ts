@@ -15,6 +15,7 @@ vi.mock("react", () => {
     },
     useMemo: <T>(factory: () => T) => factory(),
     useRef: (initialValue: unknown) => ({ current: initialValue === null ? mocks.viewer : initialValue }),
+    useState: <T>(initialValue: T) => [initialValue, vi.fn()],
   };
 });
 
