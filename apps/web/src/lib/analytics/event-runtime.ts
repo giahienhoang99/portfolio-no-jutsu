@@ -1,12 +1,6 @@
-/** Lazily constructs production analytics dependencies without running migrations. */
-import { createClient } from "@libsql/client";
-
-import { portfolioConfig } from "@/lib/portfolio-config";
-
+/** Constructs the event-ingestion view of the shared analytics runtime. */
+import { getAnalyticsRuntime } from "./analytics-runtime";
 import { AnalyticsEventService, type AnalyticsEventProcessor } from "./event-service";
-import { loadAnalyticsServerConfig } from "./server-config";
-import type { AnalyticsStore } from "./store";
-import { TursoAnalyticsStore } from "./turso-store";
 
 export type AnalyticsEventRuntime =
   | { enabled: false }
@@ -16,34 +10,21 @@ export type AnalyticsEventRuntime =
       service: AnalyticsEventProcessor;
     };
 
-let productionStore: AnalyticsStore | undefined;
-
-function getProductionStore(databaseUrl: string, databaseAuthToken: string): AnalyticsStore {
-  if (!productionStore) {
-    productionStore = new TursoAnalyticsStore(createClient({
-      url: databaseUrl,
-      authToken: databaseAuthToken,
-    }));
-  }
-  return productionStore;
-}
-
 export function getAnalyticsEventRuntime(): AnalyticsEventRuntime {
-  const publicConfig = portfolioConfig.analytics;
-  const serverConfig = loadAnalyticsServerConfig(publicConfig);
+  const runtime = getAnalyticsRuntime();
 
-  if (!serverConfig.enabled) return { enabled: false };
+  if (!runtime.enabled) return { enabled: false };
 
   return {
     enabled: true,
-    allowedOrigins: serverConfig.allowedOrigins,
+    allowedOrigins: runtime.serverConfig.allowedOrigins,
     service: new AnalyticsEventService(
-      getProductionStore(serverConfig.databaseUrl, serverConfig.databaseAuthToken),
+      runtime.store,
       {
         enabled: true,
-        hashSecret: serverConfig.hashSecret,
-        sessionTimeoutMinutes: publicConfig.sessionTimeoutMinutes,
-        metrics: publicConfig.metrics,
+        hashSecret: runtime.serverConfig.hashSecret,
+        sessionTimeoutMinutes: runtime.publicConfig.sessionTimeoutMinutes,
+        metrics: runtime.publicConfig.metrics,
       },
     ),
   };
