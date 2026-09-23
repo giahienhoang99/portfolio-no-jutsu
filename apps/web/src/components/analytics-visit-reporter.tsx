@@ -5,7 +5,6 @@ import { useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 import { createAnalyticsClient } from "@/lib/analytics/client";
-import { routeFromLegacyHash } from "../lib/portfolio-navigation";
 
 export interface AnalyticsVisitReporterProps {
   enabled: boolean;
@@ -18,7 +17,6 @@ export function AnalyticsVisitReporter({ enabled }: AnalyticsVisitReporterProps)
 
   useEffect(() => {
     if (!pathname) return;
-    if (pathname === "/" && routeFromLegacyHash(window.location.hash)) return;
     void analytics.report({ name: "visit", route: pathname });
   }, [analytics, pathname]);
 
