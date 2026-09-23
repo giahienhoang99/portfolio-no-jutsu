@@ -1,29 +1,38 @@
 /** Provides shared navigation, theme controls, and mobile footer for portfolio routes. */
 "use client";
 
-import type { ReactNode } from "react";
-import { useState } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { portfolioConfig } from "../lib/portfolio-config";
+import {
+  navigationIdFromPathname,
+  portfolioHref,
+  type NavigationId,
+  type PortfolioPageId,
+} from "../lib/portfolio-navigation";
 
 export type ThemeName = "light" | "dark" | "naruto";
-export type PortfolioPageId = "home" | "about" | "experience" | "projects";
-export type NavigationId = PortfolioPageId | "resume";
+export type { NavigationId, PortfolioPageId } from "../lib/portfolio-navigation";
 
 interface PortfolioShellProps {
-  activePage: NavigationId;
   children: ReactNode;
-  onPageSelect?: (page: PortfolioPageId) => void;
-  onThemeChange: (theme: ThemeName) => void;
-  theme: ThemeName;
 }
 
 interface PortfolioControlsProps {
   className?: string;
   onThemeChange: (theme: ThemeName) => void;
   theme: ThemeName;
+}
+
+const defaultTheme = portfolioConfig.site.defaultTheme as ThemeName;
+const PortfolioThemeContext = createContext<ThemeName>(defaultTheme);
+
+/** Returns the active portfolio theme supplied by the persistent shell. */
+export function usePortfolioTheme(): ThemeName {
+  return useContext(PortfolioThemeContext);
 }
 
 function ArrowUpRight() {
@@ -57,55 +66,48 @@ function PortfolioControls({ className = "", onThemeChange, theme }: PortfolioCo
   );
 }
 
-function portfolioHref(page: PortfolioPageId): string {
-  return page === "home" ? "/" : `/#${page}`;
-}
-
 /** Wraps route content with the shared desktop and mobile portfolio navigation. */
-export function PortfolioShell({ activePage, children, onPageSelect, onThemeChange, theme }: PortfolioShellProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export function PortfolioShell({ children }: PortfolioShellProps) {
+  const pathname = usePathname();
+  const activePage = navigationIdFromPathname(pathname);
+  const [theme, setTheme] = useState<ThemeName>(defaultTheme);
+  const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
+  const mobileMenuOpen = mobileMenuPath === pathname;
   const navigationItems: Array<{ id: NavigationId; label: string }> = [
     { id: "home", label: "Home" },
     ...portfolioConfig.pages.filter((page) => page.enabled).map((page) => ({ id: page.id as PortfolioPageId, label: page.label })),
     { id: "resume", label: "Resume" },
   ];
-  const selectPage = (page: PortfolioPageId) => {
-    setMobileMenuOpen(false);
-    onPageSelect?.(page);
-  };
   const navContents = (page: { id: NavigationId; label: string }) => <><span className="nav-icon"><NavIcon page={page.id} /></span><span className="nav-label">{page.label}</span><span className="nav-arrow">→</span></>;
 
   return (
-    <div className="site-shell" data-theme={theme}>
-      <div className="site-noise" aria-hidden="true" />
-      <aside className="sidebar" data-mobile-open={mobileMenuOpen}>
-        {onPageSelect
-          ? <button className="brand" onClick={() => selectPage("home")} aria-label="Open home page" type="button"><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></button>
-          : <Link className="brand" href="/" aria-label="Open home page" onClick={() => setMobileMenuOpen(false)}><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></Link>}
-        <button className="mobile-menu-toggle" aria-controls="portfolio-navigation" aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"} onClick={() => setMobileMenuOpen((open) => !open)} type="button">
-          <span className="mobile-menu-icon" aria-hidden="true"><span /><span /><span /></span>
-        </button>
-        <div className="sidebar-menu" id="portfolio-navigation">
-          <nav className="side-nav" aria-label="Portfolio pages">
-            {navigationItems.map((page) => {
-              const className = activePage === page.id ? "active" : "";
-              const current = activePage === page.id ? "page" : undefined;
-              if (page.id === "resume") return <Link className={className} href="/resume" aria-current={current} key={page.id} onClick={() => setMobileMenuOpen(false)}>{navContents(page)}</Link>;
-              const pageId = page.id as PortfolioPageId;
-              if (!onPageSelect) return <Link className={className} href={portfolioHref(pageId)} aria-current={current} key={page.id} onClick={() => setMobileMenuOpen(false)}>{navContents(page)}</Link>;
-              return <button className={className} onClick={() => selectPage(pageId)} aria-current={current} key={page.id} type="button">{navContents(page)}</button>;
-            })}
-          </nav>
-          <PortfolioControls className="sidebar-bottom" onThemeChange={onThemeChange} theme={theme} />
-        </div>
-      </aside>
+    <PortfolioThemeContext.Provider value={theme}>
+      <div className="site-shell" data-theme={theme}>
+        <div className="site-noise" aria-hidden="true" />
+        <aside className="sidebar" data-mobile-open={mobileMenuOpen}>
+          <Link className="brand" href="/" aria-label="Open home page" onClick={() => setMobileMenuPath(null)}><Image className="brand-avatar" src={`/avatars/${portfolioConfig.site.avatarFileName}`} alt={portfolioConfig.site.avatarAlt} width={80} height={80} priority /><span className="brand-name"><strong>{portfolioConfig.site.name}</strong><small>{portfolioConfig.site.role}</small></span></Link>
+          <button className="mobile-menu-toggle" aria-controls="portfolio-navigation" aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"} onClick={() => setMobileMenuPath((openPath) => openPath === pathname ? null : pathname)} type="button">
+            <span className="mobile-menu-icon" aria-hidden="true"><span /><span /><span /></span>
+          </button>
+          <div className="sidebar-menu" id="portfolio-navigation">
+            <nav className="side-nav" aria-label="Portfolio pages">
+              {navigationItems.map((page) => {
+                const className = activePage === page.id ? "active" : "";
+                const current = activePage === page.id ? "page" : undefined;
+                return <Link className={className} href={portfolioHref(page.id)} aria-current={current} key={page.id} onClick={() => setMobileMenuPath(null)}>{navContents(page)}</Link>;
+              })}
+            </nav>
+            <PortfolioControls className="sidebar-bottom" onThemeChange={setTheme} theme={theme} />
+          </div>
+        </aside>
 
-      <main className="content-panel" key={activePage}>
-        {children}
-        <footer className="mobile-page-footer">
-          <PortfolioControls onThemeChange={onThemeChange} theme={theme} />
-        </footer>
-      </main>
-    </div>
+        <main className="content-panel" key={pathname}>
+          {children}
+          <footer className="mobile-page-footer">
+            <PortfolioControls onThemeChange={setTheme} theme={theme} />
+          </footer>
+        </main>
+      </div>
+    </PortfolioThemeContext.Provider>
   );
 }
