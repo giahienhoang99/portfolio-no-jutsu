@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Itim } from "next/font/google";
 import "./globals.css";
 import { AnalyticsVisitReporter } from "@/components/analytics-visit-reporter";
+import { PortfolioShell } from "@/components/portfolio-shell";
 import { portfolioConfig } from "@/lib/portfolio-config";
 
 const itim = Itim({
@@ -28,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html className={itim.variable} lang="en">
       <body>
         <AnalyticsVisitReporter enabled={portfolioConfig.analytics.enabled} />
-        {children}
+        <PortfolioShell>{children}</PortfolioShell>
       </body>
     </html>
   );
