@@ -1,8 +1,0 @@
-{
-  "name": "@portfolio-no-jutsu/api",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "node --input-type=module -e \"console.log('Analytics API is not implemented yet.')\""
-  }
-}
