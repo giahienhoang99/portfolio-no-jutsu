@@ -9,8 +9,11 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace @portfolio-no-jutsu/web",
+    "dev:analytics": "npm run dev --workspace @portfolio-no-jutsu/analytics-dashboard",
     "build": "npm run build --workspace @portfolio-no-jutsu/web",
-    "lint": "npm run lint --workspace @portfolio-no-jutsu/web",
+    "build:analytics": "npm run build --workspace @portfolio-no-jutsu/analytics-dashboard",
+    "build:all": "npm run build && npm run build:analytics",
+    "lint": "npm run lint --workspace @portfolio-no-jutsu/web && npm run lint --workspace @portfolio-no-jutsu/analytics-dashboard",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "analytics:migrate": "tsx apps/web/src/lib/analytics/migrate.ts",

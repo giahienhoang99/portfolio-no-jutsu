@@ -19,6 +19,10 @@ export default defineConfig({
         "apps/web/src/lib/analytics/resume-view-tracking.ts",
         "apps/web/src/lib/analytics/server-config.ts",
         "apps/web/src/lib/portfolio-config.ts",
+        "apps/analytics-dashboard/src/lib/dashboard-config.ts",
+        "apps/analytics-dashboard/src/lib/date-range.ts",
+        "apps/analytics-dashboard/src/lib/metrics-client.ts",
+        "apps/analytics-dashboard/src/lib/metrics-view-model.ts",
         "packages/contracts/src/index.ts",
       ],
       thresholds: {
