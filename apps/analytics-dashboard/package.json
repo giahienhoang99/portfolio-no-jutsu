@@ -1,0 +1,28 @@
+{
+  "name": "@portfolio-no-jutsu/analytics-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3001",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3001",
+    "lint": "eslint .",
+    "test": "vitest run --root ../.. apps/analytics-dashboard",
+    "test:coverage": "vitest run --coverage --root ../.. apps/analytics-dashboard --coverage.include=apps/analytics-dashboard/src/lib/**/*.ts --coverage.reportsDirectory=coverage/analytics-dashboard"
+  },
+  "dependencies": {
+    "@portfolio-no-jutsu/contracts": "0.1.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "latest",
+    "vitest": "^5.0.0"
+  }
+}
