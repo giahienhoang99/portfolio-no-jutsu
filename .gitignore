@@ -8,3 +8,5 @@ coverage/
 *.tsbuildinfo
 .vercel
 .env*
+!.env.example
+!**/.env.example

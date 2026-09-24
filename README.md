@@ -4,7 +4,8 @@ An anime-inspired software-engineering portfolio built with Next.js, TypeScript,
 
 ## Repository structure
 
-- `apps/web` — Next.js App Router application, including pages and server-side Route Handlers.
+- `apps/web` — public Next.js portfolio, including pages and server-side Route Handlers.
+- `apps/analytics-dashboard` — separately deployed owner-only Next.js analytics interface.
 - `packages/contracts` — shared Zod schemas and TypeScript types for portfolio configuration and analytics.
 - `portfolio.config.json` — owner-editable public content and feature settings.
 - `.env.example` — private server-environment variable names with safe placeholders.
@@ -28,6 +29,24 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+### Private analytics dashboard
+
+The dashboard is an independent workspace that reads aggregate data through the portfolio's authenticated metrics API. It never connects directly to Turso and never sends the admin token to browser code.
+
+Create its local environment file:
+
+```bash
+cp apps/analytics-dashboard/.env.example apps/analytics-dashboard/.env.local
+```
+
+Set `ANALYTICS_ADMIN_TOKEN` to the same development token used by the portfolio API. Keep the default local API URL while the public app runs on port 3000, then start the dashboard in another terminal:
+
+```bash
+npm run dev:analytics
+```
+
+Open `http://127.0.0.1:3001`. The development server binds only to the loopback interface so it is not exposed to other devices on the local network.
 
 Analytics is enabled for this hosted portfolio in `portfolio.config.json`, so a complete local analytics setup also requires the private values described below. To work on the UI without analytics, temporarily set `analytics.enabled` to `false`; disabled mode sends no analytics requests and does not require private environment variables.
 
@@ -176,6 +195,19 @@ Changing a Vercel environment variable does not update an existing deployment; r
 
 After a production deployment, confirm the job under **Vercel → Project → Settings → Cron Jobs**.
 
+### Private dashboard project
+
+Deploy `apps/analytics-dashboard` as a second Vercel project rather than adding an admin route to the public portfolio. Configure its Root Directory as `apps/analytics-dashboard` and set these server-only Production variables:
+
+| Variable | Value |
+| --- | --- |
+| `PORTFOLIO_METRICS_API_URL` | `https://hienhoang.dev/api/metrics` |
+| `ANALYTICS_ADMIN_TOKEN` | The same Production admin token configured on the public portfolio project |
+
+Do not add Turso credentials to the dashboard project. In **Vercel → Project → Settings → Deployment Protection**, select **Vercel Authentication** and **All Deployments** before treating the dashboard as private. The application intentionally contains no custom login screen; Vercel must deny unauthenticated requests before they reach Next.js.
+
+Configure Preview variables separately if dashboard previews should read development metrics. Every Preview and Production deployment must remain protected. The dashboard adds `noindex` metadata and response headers as defense in depth, but crawler directives are not access control.
+
 Refer to Vercel's documentation for [environment scopes](https://vercel.com/docs/environment-variables) and [secured Cron Jobs](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
 
 ## Retention
@@ -218,6 +250,7 @@ npm test
 npm run test:coverage
 npm run lint
 npm run build
+npm run build:analytics
 ```
 
 The root HTML coverage report is written to `coverage/index.html`. Workspace-specific commands remain available:
@@ -225,6 +258,7 @@ The root HTML coverage report is written to `coverage/index.html`. Workspace-spe
 ```bash
 npm test --workspace @portfolio-no-jutsu/contracts
 npm test --workspace @portfolio-no-jutsu/web
+npm test --workspace @portfolio-no-jutsu/analytics-dashboard
 ```
 
 Before promoting an analytics change:
